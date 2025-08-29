@@ -1,25 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
 import PlayGround from './components/player';
+import useGame from './hooks/useGame';
 
 const App = () => {
-  const [activePlayer, setActivePlayer] = useState<1 | 2>(1);
-
-  const playerOneInputRef = useRef<HTMLInputElement | null>(null);
-  const playerTwoInputRef = useRef<HTMLInputElement | null>(null);
-
-  // focus the active player whenever it changes
-  useEffect(() => {
-    if (activePlayer === 1) {
-      playerOneInputRef.current?.focus();
-    } else {
-      playerTwoInputRef.current?.focus();
-    }
-  }, [activePlayer]);
-
-  // toggle turn after submit
-  const handleTurnSwitch = () => {
-    setActivePlayer((prev) => (prev === 1 ? 2 : 1));
-  };
+  const {
+    activePlayer,
+    playerOneInputRef,
+    playerTwoInputRef,
+    handleTurnSwitch,
+    playerData,
+    lastCharacter,
+  } = useGame();
+  console.log(`⚠️ ~ App ~ playerData:`, playerData, lastCharacter);
 
   return (
     <div className="min-h-svh w-full bg-[#fafafa] relative text-gray-900">
@@ -43,12 +34,18 @@ const App = () => {
             ref={playerOneInputRef}
             disabled={activePlayer !== 1}
             onSubmit={handleTurnSwitch}
+            playerData={playerData.player1}
+            error={playerData.errors.player1}
+            lastLetter={activePlayer === 1 ? lastCharacter : ''}
           />
           <PlayGround
             label="Player 2"
             ref={playerTwoInputRef}
             disabled={activePlayer !== 2}
             onSubmit={handleTurnSwitch}
+            playerData={playerData.player2}
+            error={playerData.errors.player2}
+            lastLetter={activePlayer === 2 ? lastCharacter : ''}
           />
         </div>
       </div>
