@@ -1,3 +1,4 @@
+import { forwardRef, type FormEvent } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Input } from '../ui/input';
@@ -7,48 +8,73 @@ import { ScrollArea } from '../ui/scroll-area';
 interface PlayGroundProps {
   label: string;
   score?: number;
+  disabled?: boolean;
+  onSubmit?: () => void;
 }
 
-const PlayGround = ({ label }: PlayGroundProps) => {
-  return (
-    <Card className="relative">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <Label>{label}</Label>
-          <p className="text-sm">Score</p>
-        </div>
-        <Input placeholder="Player 1" className="text-xl" />
-        <div className="flex items-center justify-between">
-          <Button className="mt-2 w-fit cursor-pointer">Next</Button>
+const PlayGround = forwardRef<HTMLInputElement, PlayGroundProps>(
+  ({ label, disabled, onSubmit }, ref) => {
+    const handleSubmit = (e: FormEvent) => {
+      e.preventDefault();
+      onSubmit?.(); // tell parent to switch turn
+    };
 
-          <p>Count down</p>
-        </div>
-      </CardHeader>
-
-      <CardContent>
-        <li className="flex items-center justify-between pb-4 border-b border-gray-400 mb-4">
-          <p>Word</p>
-          <p className="text-sm">Duration</p>
-        </li>
-        <ScrollArea className="h-[500px] w-full border-b">
-          <ul className="">
-            {Array.from({ length: 100 }).map((_, index) => (
-              <li
-                className="flex items-center justify-between py-2 border-b border-gray-400"
-                key={index}
+    return (
+      <Card className="relative">
+        <CardHeader>
+          <form onSubmit={handleSubmit}>
+            <div className="flex items-center justify-between">
+              <Label>{label}</Label>
+              <p className="text-sm">Score</p>
+            </div>
+            <Input
+              placeholder="Player 1"
+              className="text-xl"
+              type="text"
+              ref={ref}
+              disabled={disabled}
+            />
+            <div className="flex items-center justify-between">
+              <Button
+                className="mt-2 w-fit cursor-pointer"
+                type="submit"
+                disabled={disabled}
               >
-                <div>
-                  <p>word {index}</p>
-                </div>
+                Next
+              </Button>
 
-                <p className="text-sm">2s</p>
-              </li>
-            ))}
-          </ul>
-        </ScrollArea>
-      </CardContent>
-    </Card>
-  );
-};
+              <p>Count down</p>
+            </div>
+          </form>
+        </CardHeader>
+
+        <CardContent>
+          <li className="flex items-center justify-between pb-4 border-b border-gray-400 mb-4">
+            <p>Word</p>
+            <p className="text-sm">Duration</p>
+          </li>
+          <ScrollArea className="h-[500px] w-full border-b">
+            <ul className="">
+              {Array.from({ length: 100 }).map((_, index) => (
+                <li
+                  className="flex items-center justify-between py-2 border-b border-gray-400"
+                  key={index}
+                >
+                  <div>
+                    <p>word {index}</p>
+                  </div>
+
+                  <p className="text-sm">2s</p>
+                </li>
+              ))}
+            </ul>
+          </ScrollArea>
+        </CardContent>
+      </Card>
+    );
+  },
+);
+
+PlayGround.displayName = 'PlayGround';
 
 export default PlayGround;
