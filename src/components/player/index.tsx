@@ -71,7 +71,7 @@ const PlayGround = forwardRef<HTMLInputElement, PlayGroundProps>(
           </li>
           <ScrollArea className="h-[500px] w-full border-b">
             <ul className="">
-              {playerData?.map(({ word, time }, index) => (
+              {playerData?.map(({ word, duration }, index) => (
                 <li
                   className="flex items-center justify-between py-2 border-b border-gray-400"
                   key={index}
@@ -80,7 +80,7 @@ const PlayGround = forwardRef<HTMLInputElement, PlayGroundProps>(
                     <p>{word}</p>
                   </div>
 
-                  <p className="text-sm">2s</p>
+                  <p className="text-sm">{Math.round(duration)}s</p>
                 </li>
               ))}
             </ul>

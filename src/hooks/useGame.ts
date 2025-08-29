@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 export type TWord = {
   word: string;
   time: number;
+  duration: number;
 };
 
 const useGame = () => {
@@ -18,8 +19,10 @@ const useGame = () => {
   const [activePlayer, setActivePlayer] = useState<1 | 2>(1);
   const playerOneInputRef = useRef<HTMLInputElement | null>(null);
   const playerTwoInputRef = useRef<HTMLInputElement | null>(null);
+  const [turnStartTime, setTurnStartTime] = useState(Date.now());
 
   useEffect(() => {
+    setTurnStartTime(Date.now());
     if (activePlayer === 1) {
       playerOneInputRef.current?.focus();
     } else {
@@ -44,6 +47,10 @@ const useGame = () => {
   const handleTurnSwitch = async (word: string) => {
     const currentKey = activePlayer === 1 ? 'player1' : 'player2';
     const trimmed = word.trim().toLowerCase();
+
+    // check the duration
+    const now = Date.now();
+    const duration = (now - turnStartTime) / 1000;
 
     // 1️ At least 4 characters
     if (trimmed.length < 4) {
@@ -109,7 +116,10 @@ const useGame = () => {
     // Passed all validation
     setPlayerData((prev) => ({
       ...prev,
-      [currentKey]: [...prev[currentKey], { word: trimmed, time: Date.now() }],
+      [currentKey]: [
+        ...prev[currentKey],
+        { word: trimmed, time: now, duration },
+      ],
       errors: {
         ...prev.errors,
         [currentKey]: null,

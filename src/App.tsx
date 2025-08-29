@@ -10,7 +10,6 @@ const App = () => {
     playerData,
     lastCharacter,
   } = useGame();
-  console.log(`⚠️ ~ App ~ playerData:`, playerData, lastCharacter);
 
   return (
     <div className="min-h-svh w-full bg-[#fafafa] relative text-gray-900">
